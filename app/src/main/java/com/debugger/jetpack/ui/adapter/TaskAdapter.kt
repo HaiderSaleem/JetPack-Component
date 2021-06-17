@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.debugger.jetpack.data.Task
 import com.debugger.jetpack.databinding.ItemTasksBinding
 
-class TaskAdapter(private val listener: onItemClickListener) :
+class TaskAdapter(private val listener: OnItemClickListener) :
     ListAdapter<Task, TaskAdapter.TaskViewHolder>(DiffCallback()) {
 
 
@@ -32,6 +32,7 @@ class TaskAdapter(private val listener: onItemClickListener) :
                         listener.onCheckBoxClick(task, cbTask.isChecked)
                     }
                 }
+
             }
         }
 
@@ -54,7 +55,7 @@ class TaskAdapter(private val listener: onItemClickListener) :
         holder.bind(getItem(position))
     }
 
-    interface onItemClickListener {
+    interface OnItemClickListener {
         fun onItemClick(task: Task)
         fun onCheckBoxClick(task: Task, isChecked: Boolean)
     }
