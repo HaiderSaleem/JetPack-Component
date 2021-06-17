@@ -6,6 +6,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.debugger.jetpack.data.PreferencesManager
 import com.debugger.jetpack.data.SortedOrder
+import com.debugger.jetpack.data.Task
 import com.debugger.jetpack.data.TaskDao
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -44,6 +45,14 @@ class TasksViewModel @ViewModelInject constructor(
 
     fun onHideCompletedSelected(hideComplete: Boolean) = viewModelScope.launch {
         preferencesManager.updateHideComplete(hideComplete)
+    }
+
+    fun onTaskCompleted(task: Task) = viewModelScope.launch {
+        taskDao.update(task)
+    }
+
+    fun onTaskCheckedChange(task: Task, isChecked: Boolean) = viewModelScope.launch {
+        taskDao.update(task.copy(completed = isChecked))
     }
 
     @FlowPreview

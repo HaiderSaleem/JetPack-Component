@@ -13,8 +13,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.debugger.jetpack.R
 import com.debugger.jetpack.data.SortedOrder
+import com.debugger.jetpack.data.Task
 import com.debugger.jetpack.databinding.FragmentTaskBinding
 import com.debugger.jetpack.ui.adapter.TaskAdapter
+import com.debugger.jetpack.ui.adapter.TaskAdapter.onItemClickListener
 import com.debugger.jetpack.util.onQueryTextChanged
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.FlowPreview
@@ -22,7 +24,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class TaskFragment : Fragment(R.layout.fragment_task) {
+class TaskFragment : Fragment(R.layout.fragment_task), onItemClickListener {
 
     private val viewModel: TasksViewModel by viewModels()
     private lateinit var taskAdapter: TaskAdapter
@@ -33,7 +35,7 @@ class TaskFragment : Fragment(R.layout.fragment_task) {
 
         val binding = FragmentTaskBinding.bind(view)
 
-        taskAdapter = TaskAdapter()
+        taskAdapter = TaskAdapter(this)
 
         binding.apply {
             rvTasks.apply {
@@ -90,5 +92,13 @@ class TaskFragment : Fragment(R.layout.fragment_task) {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onItemClick(task: Task) {
+        viewModel.onTaskCompleted(task)
+    }
+
+    override fun onCheckBoxClick(task: Task, isChecked: Boolean) {
+        viewModel.onTaskCheckedChange(task, isChecked)
     }
 }

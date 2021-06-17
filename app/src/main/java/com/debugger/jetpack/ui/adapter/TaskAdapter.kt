@@ -9,11 +9,31 @@ import androidx.recyclerview.widget.RecyclerView
 import com.debugger.jetpack.data.Task
 import com.debugger.jetpack.databinding.ItemTasksBinding
 
-class TaskAdapter : ListAdapter<Task, TaskAdapter.TaskViewHolder>(DiffCallback()) {
+class TaskAdapter(private val listener: onItemClickListener) :
+    ListAdapter<Task, TaskAdapter.TaskViewHolder>(DiffCallback()) {
 
 
-    class TaskViewHolder(private val binding: ItemTasksBinding) :
+    inner class TaskViewHolder(private val binding: ItemTasksBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            binding.apply {
+                root.setOnClickListener {
+                    if (adapterPosition != RecyclerView.NO_POSITION) {
+                        val task = getItem(adapterPosition)
+
+                        listener.onItemClick(task)
+                    }
+                }
+                cbTask.setOnClickListener {
+                    if (adapterPosition != RecyclerView.NO_POSITION) {
+                        val task = getItem(adapterPosition)
+
+                        listener.onCheckBoxClick(task, cbTask.isChecked)
+                    }
+                }
+            }
+        }
 
         fun bind(task: Task) {
             binding.apply {
@@ -34,8 +54,12 @@ class TaskAdapter : ListAdapter<Task, TaskAdapter.TaskViewHolder>(DiffCallback()
         holder.bind(getItem(position))
     }
 
-    class DiffCallback: DiffUtil.ItemCallback<Task>()
-    {
+    interface onItemClickListener {
+        fun onItemClick(task: Task)
+        fun onCheckBoxClick(task: Task, isChecked: Boolean)
+    }
+
+    class DiffCallback : DiffUtil.ItemCallback<Task>() {
         override fun areItemsTheSame(oldItem: Task, newItem: Task) =
             oldItem.id == newItem.id
 
