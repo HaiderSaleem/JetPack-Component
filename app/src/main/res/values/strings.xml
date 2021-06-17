@@ -7,4 +7,5 @@
     <string name="add_or_edit_text">Add or Edit text</string>
     <string name="search">Search</string>
     <string name="sort">Sort</string>
+    <string name="task_created">Task Created</string>
 </resources>

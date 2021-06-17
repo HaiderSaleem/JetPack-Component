@@ -20,5 +20,5 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_margin="10dp"
-        android:src="@drawable/ic_search_foreground" />
+        android:src="@drawable/ic_add_foreground" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

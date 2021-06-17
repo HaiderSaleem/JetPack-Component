@@ -1,9 +1,8 @@
 package com.debugger.jetpack.ui.tasks
 
+import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.debugger.jetpack.data.PreferencesManager
 import com.debugger.jetpack.data.SortedOrder
 import com.debugger.jetpack.data.Task
@@ -18,10 +17,11 @@ import kotlinx.coroutines.launch
 
 class TasksViewModel @ViewModelInject constructor(
     private val taskDao: TaskDao,
-    private val preferencesManager: PreferencesManager
+    private val preferencesManager: PreferencesManager,
+    @Assisted private val state: SavedStateHandle
 ) : ViewModel() {
 
-    val searchQuery = MutableStateFlow("")
+    val searchQuery = state.getLiveData("searchQuery","")
     private val taskEventsChannel = Channel<TaskEvents> { }
 
     val taskEvents = taskEventsChannel.receiveAsFlow()
@@ -30,7 +30,7 @@ class TasksViewModel @ViewModelInject constructor(
 
     @FlowPreview
     private val taskFlow = combine(
-        searchQuery,
+        searchQuery.asFlow(),
         preferencesFlow
     ) { searchQuery, filterPreferences ->
         Pair(searchQuery, filterPreferences)
@@ -51,7 +51,7 @@ class TasksViewModel @ViewModelInject constructor(
     }
 
     fun onTaskCompleted(task: Task) = viewModelScope.launch {
-        taskDao.update(task)
+        taskEventsChannel.send(TaskEvents.NavigateToEditTaskScreen(task))
     }
 
     fun onTaskCheckedChange(task: Task, isChecked: Boolean) = viewModelScope.launch {
@@ -67,7 +67,13 @@ class TasksViewModel @ViewModelInject constructor(
         taskDao.insert(task)
     }
 
+    fun onAddNewTaskClick() = viewModelScope.launch {
+        taskEventsChannel.send(TaskEvents.NavigateToAddTaskScreen)
+    }
+
     sealed class TaskEvents {
+        object NavigateToAddTaskScreen: TaskEvents()
+        data class NavigateToEditTaskScreen(val task: Task): TaskEvents()
         data class ShowUndoDeleteMessage(val task: Task) : TaskEvents()
     }
 

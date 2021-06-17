@@ -8,11 +8,24 @@
     <fragment
         android:id="@+id/taskFragment"
         android:name="com.debugger.jetpack.ui.tasks.TaskFragment"
-        android:label="fragment_task"
-        tools:layout="@layout/fragment_task" />
+        android:label="Tasks"
+        tools:layout="@layout/fragment_task" >
+        <action
+            android:id="@+id/action_taskFragment_to_addEditFragment"
+            app:destination="@id/addEditFragment" />
+    </fragment>
     <fragment
         android:id="@+id/addEditFragment"
-        android:name="com.debugger.jetpack.fragment.AddEditFragment"
-        android:label="fragment_add_edit"
-        tools:layout="@layout/fragment_add_edit" />
+        android:name="com.debugger.jetpack.ui.addedittask.AddEditFragment"
+        android:label="{title}"
+        tools:layout="@layout/fragment_add_edit" >
+        <argument
+            android:name="task"
+            app:argType="com.debugger.jetpack.data.Task"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <argument
+            android:name="title"
+            app:argType="string" />
+    </fragment>
 </navigation>
