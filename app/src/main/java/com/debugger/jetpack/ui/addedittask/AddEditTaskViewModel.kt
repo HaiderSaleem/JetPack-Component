@@ -18,7 +18,7 @@ class AddEditTaskViewModel @ViewModelInject constructor(
 
     val task = state.get<Task>("task")
     private val addEditTaskEvent = Channel<AddEditTaskEvent> { }
-    private val addEdItTaskEventFlow = addEditTaskEvent.receiveAsFlow()
+    val addEdItTaskEventFlow = addEditTaskEvent.receiveAsFlow()
 
     var taskName = state.get<String>("taskName") ?: task?.name ?: ""
         set(value) {
@@ -35,6 +35,7 @@ class AddEditTaskViewModel @ViewModelInject constructor(
     fun onSaveClick() {
         if (taskName.isBlank()) {
             showInvalidInputMessage("Name cannot by empty")
+            return
         }
 
         if (task != null) {

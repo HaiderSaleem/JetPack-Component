@@ -21,7 +21,7 @@ class TasksViewModel @ViewModelInject constructor(
     @Assisted private val state: SavedStateHandle
 ) : ViewModel() {
 
-    val searchQuery = state.getLiveData("searchQuery","")
+    val searchQuery = state.getLiveData("searchQuery", "")
     private val taskEventsChannel = Channel<TaskEvents> { }
 
     val taskEvents = taskEventsChannel.receiveAsFlow()
@@ -71,10 +71,22 @@ class TasksViewModel @ViewModelInject constructor(
         taskEventsChannel.send(TaskEvents.NavigateToAddTaskScreen)
     }
 
+    fun onAddEditResult(result: Int) {
+        when (result) {
+            0 -> showTaskSaved("Task Added")
+            1 -> showTaskSaved("Task Updated")
+        }
+    }
+
+    private fun showTaskSaved(msg: String) = viewModelScope.launch {
+        taskEventsChannel.send(TaskEvents.ShowSaveTaskMessage(msg))
+    }
+
     sealed class TaskEvents {
-        object NavigateToAddTaskScreen: TaskEvents()
-        data class NavigateToEditTaskScreen(val task: Task): TaskEvents()
+        object NavigateToAddTaskScreen : TaskEvents()
+        data class NavigateToEditTaskScreen(val task: Task) : TaskEvents()
         data class ShowUndoDeleteMessage(val task: Task) : TaskEvents()
+        data class ShowSaveTaskMessage(val msg: String) : TaskEvents()
     }
 
     @FlowPreview
