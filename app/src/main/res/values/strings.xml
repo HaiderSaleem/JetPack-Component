@@ -8,4 +8,6 @@
     <string name="search">Search</string>
     <string name="sort">Sort</string>
     <string name="task_created">Task Created</string>
+    <string name="couldn_t_load_images">Couldn\'t load images</string>
+    <string name="retry">Retry</string>
 </resources>
