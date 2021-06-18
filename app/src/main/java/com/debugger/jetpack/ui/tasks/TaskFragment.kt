@@ -15,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.debugger.jetpack.NavTaskGraphDirections
 import com.debugger.jetpack.R
 import com.debugger.jetpack.data.SortedOrder
 import com.debugger.jetpack.data.Task
@@ -113,6 +114,10 @@ class TaskFragment : Fragment(R.layout.fragment_task), OnItemClickListener {
                         Snackbar.make(requireView(), event.msg, Snackbar.LENGTH_SHORT)
                             .show()
                     }
+                    TasksViewModel.TaskEvents.NavigateToDeleteAllScreen -> {
+                        val action = NavTaskGraphDirections.actionGlobalDeleteAllCompletedDialogFragment()
+                        findNavController().navigate(action)
+                    }
                 }.exhaustive
             }
         }
@@ -139,8 +144,8 @@ class TaskFragment : Fragment(R.layout.fragment_task), OnItemClickListener {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_deletet -> {
-                Log.d("TaskFragment", "onOptionsItemSelected: Deleted")
+            R.id.action_delete -> {
+                viewModel.onDeleteAllClick()
                 true
             }
             R.id.action_hide -> {
